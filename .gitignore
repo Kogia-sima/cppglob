@@ -1,0 +1,12 @@
+/build/
+/old/
+
+.ipynb_checkpoints/
+.mypy_cache/
+__pycache__/
+
+*.log
+*.o
+*.so
+*.a
+*.tar.gz

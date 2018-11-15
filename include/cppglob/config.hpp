@@ -1,0 +1,39 @@
+#ifndef CPPGLOB_CONFIG_HPP
+#define CPPGLOB_CONFIG_HPP
+
+#if __cplusplus < 201703
+#  error This file requires compiler and library support \
+for the ISO C++ 2017 standard. This support must be enabled \
+with the -std=c++17 or -std=gnu++17 compiler options.
+#endif
+
+#include <filesystem>
+
+#if defined(_WIN32) && !defined(__CYGWIN__)
+#  include <cwchar>
+#  define CPPGLOB_IS_WINDOWS 1
+#endif
+
+#if (defined _WIN32 || defined WINCE || defined __CYGWIN__)
+#  ifdef CPPGLOB_BUILDING
+#    define CPPGLOB_EXPORT __declspec(dllexport)
+#  else
+#    define CPPGLOB_EXPORT __declspec(dllimport)
+#  endif
+#  define CPPGLOB_LOCAL
+#  define CPPGLOB_INLINE inline
+#elif defined __GNUC__ && __GNUC__ >= 4
+#  define CPPGLOB_EXPORT __attribute__((visibility("default")))
+#  define CPPGLOB_LOCAL __attribute__((visibility("hidden")))
+#  define CPPGLOB_INLINE __attribute__((visibility("hidden"))) inline
+#else
+#  define CPPGLOB_EXPORT
+#  define CPPGLOB_LOCAL
+#  define CPPGLOB_INLINE inline
+#endif
+
+namespace cppglob {
+  namespace fs = std::filesystem;
+}  // namespace cppglob
+
+#endif
