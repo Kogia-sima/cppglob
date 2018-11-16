@@ -9,8 +9,16 @@ set_target_properties(cppglob
 
 cotire(cppglob)
 
-install(
-  TARGETS cppglob
-  EXPORT cppglob-config
-  LIBRARY DESTINATION lib
-  COMPONENT libs)
+if (BUILD_SHARED_LIBS)
+  install(
+    TARGETS cppglob
+    EXPORT cppglob-config
+    DESTINATION lib
+    COMPONENT libs)
+else()
+  install(
+    TARGETS cppglob
+    EXPORT cppglob-config
+    ARCHIVE DESTINATION lib
+    COMPONENT libs)
+endif()

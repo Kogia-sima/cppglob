@@ -1,7 +1,7 @@
 #ifndef CPPGLOB_CONFIG_HPP
 #define CPPGLOB_CONFIG_HPP
 
-#if __cplusplus < 201703
+#if !defined(_MSC_VER) && __cplusplus < 201703
 #  error This file requires compiler and library support \
 for the ISO C++ 2017 standard. This support must be enabled \
 with the -std=c++17 or -std=gnu++17 compiler options.
@@ -11,7 +11,10 @@ with the -std=c++17 or -std=gnu++17 compiler options.
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #  include <cwchar>
+#  define CStr(x) L##x
 #  define CPPGLOB_IS_WINDOWS 1
+#else
+#  define CStr(x) x
 #endif
 
 #if (defined _WIN32 || defined WINCE || defined __CYGWIN__)

@@ -6,7 +6,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(cppglob_test ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
-target_link_libraries(cppglob_test PRIVATE cppglob stdc++fs ${GTEST_LIBRARIES} gmock)
+target_link_libraries(cppglob_test PRIVATE cppglob stdc++fs ${GTEST_LIBRARIES})
 
 add_test(
   NAME test_cmd

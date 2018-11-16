@@ -138,11 +138,9 @@ namespace cppglob {
 
     friend difference_type operator-(const glob_iterator& lhs,
                                      const glob_iterator& rhs) {
-      if (rhs == lhs) {
+      if (rhs == lhs || rhs.finished()) {
         return 0;
-      } else if (rhs.finished()) {
-        return -(lhs.M_pathnames.size() - lhs.M_index);
-      } else if (lhs.finished()) {
+	  } else if (lhs.finished()) {
         return rhs.M_pathnames.size() - rhs.M_index;
       } else {
         return lhs.M_index - rhs.M_index;
