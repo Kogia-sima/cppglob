@@ -6,23 +6,25 @@
 #include <cppglob/fnmatch.hpp>
 
 namespace cppglob {
+  using regex_type = std::basic_regex<char_type>;
+
   namespace detail {
-    CPPGLOB_INLINE std::regex compile_pattern(const std::string_view& pat) {
-      return std::regex(translate(pat));
+    CPPGLOB_INLINE regex_type compile_pattern(const string_view_type& pat) {
+      return regex_type(translate(pat));
     }
 
-    CPPGLOB_INLINE std::string replace_all(const std::string_view& str,
-                            const std::string_view& from,
-                            const std::string_view& to) {
-      std::string res;
+    CPPGLOB_INLINE string_type replace_all(const string_view_type& str,
+                                           const string_view_type& from,
+                                           const string_view_type& to) {
+      string_type res;
       res.reserve(str.size());
 
-      std::string::size_type pos_start = 0L;
+      string_type::size_type pos_start = 0L;
 
       while (true) {
-        std::string::size_type pos = str.find(from, pos_start);
+        string_type::size_type pos = str.find(from, pos_start);
 
-        if (pos == std::string_view::npos) {
+        if (pos == string_view_type::npos) {
           res += str.substr(pos_start);
           break;
         }
@@ -36,9 +38,9 @@ namespace cppglob {
       return res;
     }
 
-    CPPGLOB_INLINE bool should_be_escaped(char c) {
-      static const char special_chars[] = R"([]-{}()*+?.\^$|)";
-      for (const char& special_char : special_chars) {
+    CPPGLOB_INLINE bool should_be_escaped(char_type c) {
+      static const string_view_type special_chars = CStr(R"([]-{}()*+?.\^$|)");
+      for (const char_type& special_char : special_chars) {
         if (c == special_char) {
           return true;
         }
@@ -46,16 +48,16 @@ namespace cppglob {
       return false;
     }
 
-    CPPGLOB_INLINE std::string normpath(const std::string_view& p) {
+    CPPGLOB_INLINE string_type normpath(const string_view_type& p) {
       return fs::path(p).lexically_normal().native();
     }
   }  // namespace detail
 
-  void filter(std::vector<fs::path>& names, const std::string_view& pat) {
-    std::string pat_str = detail::normpath(pat);
-    std::regex re =
-        detail::compile_pattern(std::string_view(&pat_str[0], pat_str.size()));
-    auto filter_fn = [&](std::vector<fs::path>::value_type& p) {
+  void filter(std::vector<fs::path>& names, const string_view_type& pat) {
+    string_type pat_str = detail::normpath(pat);
+    regex_type re =
+        detail::compile_pattern(string_view_type(&pat_str[0], pat_str.size()));
+    auto filter_fn = [&](std::vector<fs::path>::value_type& p) -> bool {
       return !std::regex_match(p.lexically_normal().native(), re);
     };
 
@@ -63,9 +65,9 @@ namespace cppglob {
     names.erase(result, names.end());
   }
 
-  std::string translate(const std::string_view& pat) {
+  string_type translate(const string_view_type& pat) {
     std::size_t i = 0L, n = pat.size();
-    std::string res;
+    string_type res;
     res.reserve(pat.size());
 
     while (i < n) {
@@ -73,7 +75,7 @@ namespace cppglob {
       ++i;
 
       if (c == '*') {
-        res += ".*";
+        res += CStr(".*");
       } else if (c == '?') {
         res += '.';
       } else if (c == '[') {
@@ -87,12 +89,13 @@ namespace cppglob {
         while (j < n && pat[j] != ']') {
           ++j;
         }
+
         if (j >= n) {
           // close parenthesis not found.
-          res += "\\[";
+          res += CStr("\\[");
         } else {
-          std::string stuff = detail::replace_all(
-              std::string_view(&pat[i], j - i), "\\", "\\\\");
+          string_type stuff = detail::replace_all(
+              string_view_type(&pat[i], j - i), CStr("\\"), CStr("\\\\"));
           i = j + 1;
           if (stuff[0] == '!') {
             stuff[0] = '^';

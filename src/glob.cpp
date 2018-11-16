@@ -1,6 +1,5 @@
 #include <cassert>
 #include <cstdlib>
-#include <iostream>
 #include <algorithm>
 #include <filesystem>
 #include <cppglob/fnmatch.hpp>
@@ -8,10 +7,12 @@
 #include <cppglob/glob_iterator.hpp>
 
 namespace cppglob {
-  static std::regex magic_check("([*?[])");
+  using regex_type = std::basic_regex<char_type>;
+
+  static regex_type magic_check(CStr("([*?[])"));
 
   namespace detail {
-    CPPGLOB_INLINE bool has_magic(const std::string& str) {
+    CPPGLOB_INLINE bool has_magic(const string_type& str) {
       return std::regex_search(str, magic_check);
     }
 
@@ -20,7 +21,7 @@ namespace cppglob {
     }
 
     CPPGLOB_INLINE bool isrecursive(const fs::path& pathname) {
-      return pathname.native() == "**";
+      return pathname.native() == CStr("**");
     }
 
     CPPGLOB_INLINE std::vector<fs::path> iterdir(const fs::path& dirname,
@@ -82,9 +83,9 @@ namespace cppglob {
         names.erase(result, names.end());
       }
 
-      const std::string& pattern_str = pattern.native();
+      const string_type& pattern_str = pattern.native();
       ::cppglob::filter(names,
-                        std::string_view(&pattern_str[0], pattern_str.size()));
+                        string_view_type(&pattern_str[0], pattern_str.size()));
       return names;
     }
 
