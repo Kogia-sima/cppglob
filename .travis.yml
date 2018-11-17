@@ -11,7 +11,7 @@ matrix:
           packages:
             - g++-8
       env:
-        - MATRIX_EVAL="CXX=g++-8 && CXXFLAGS="
+        - MATRIX_EVAL="CXX=g++-8"
 
     - os: linux
       addons:
@@ -23,10 +23,9 @@ matrix:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-6.0
-            - libc++-dev
-            - libc++abi-dev
+            - libstdc++-8-dev
       env:
-        - MATRIX_EVAL="CXX=clang++-6.0 && CXXFLAGS=-stdlib=libc++"
+        - MATRIX_EVAL="CXX=clang++-6.0"
 
 before_script:
   - eval "${MATRIX_EVAL}"
@@ -35,7 +34,7 @@ before_script:
 
 script:
   # Run cmake, then compile and run tests with make
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TEST=ON -DCMAKE_CXX_FLAGS=${CXXFLAGS} ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TEST=ON ..
   - make -j$(nproc)
   - ctest -V
 
