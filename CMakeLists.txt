@@ -14,7 +14,7 @@ endif()
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 add_definitions("-DCPPGLOB_BUILDING")
-file(GLOB cpp_sources ${PROJECT_SOURCE_DIR}/src/*)
+file(GLOB cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 if(MSVC)
   set(CompilerFlags
