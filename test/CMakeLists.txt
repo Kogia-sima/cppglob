@@ -1,11 +1,17 @@
 cmake_minimum_required(VERSION 3.1.0)
 
+find_package(Threads REQUIRED)
+
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/cppglob.dir/src)
 
 include_directories(${gtest_SOURCE_DIR}/include)
 
 add_executable(cppglob_test ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
-target_link_libraries(cppglob_test PRIVATE cppglob stdc++fs gtest gtest_main)
+target_link_libraries(cppglob_test PRIVATE cppglob stdc++fs gtest gtest_main Threads::Threads)
+
+if (NOT MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -lpthread")
+endif()
 
 add_test(
   NAME test_cmd
