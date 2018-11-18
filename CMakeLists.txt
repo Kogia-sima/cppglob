@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(cppglob VERSION 0.1.0 LANGUAGES CXX)
 
+option(BUILD_STATIC "Build static library" OFF)
+option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_TEST "Build test" OFF)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -12,6 +14,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
 endif()
 
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
+set(BUILD_SHARED_LIBS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 add_definitions("-DCPPGLOB_BUILDING")
 file(GLOB cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
