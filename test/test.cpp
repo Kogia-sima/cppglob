@@ -58,7 +58,7 @@ TEST(fnmatch, translate) {
 }
 
 TEST(fnmatch, filter) {
-  std::vector<fs::path> names{".///./a/b", "./a/../a/b", "a/\\b/c/../../../d"};
+  std::vector<fs::path> names{".///./a/b", "./a/../a/b", "apple/"};
   std::string_view pattern{"./a/*"};
   cppglob::filter(names, pattern);
 
