@@ -13,7 +13,7 @@ matrix:
             - g++-8
             - lcov
       env:
-        - MATRIX_EVAL="CXX=g++-8"
+        - MATRIX_EVAL="CXX=g++-8 && BUILD_TYPE=Coverage"
 
     - os: linux
       addons:
@@ -27,7 +27,7 @@ matrix:
             - clang-6.0
             - libstdc++-8-dev
       env:
-        - MATRIX_EVAL="CXX=clang++-6.0"
+        - MATRIX_EVAL="CXX=clang++-6.0 && BUILD_TYPE=Debug"
 
 before_script:
   - eval "${MATRIX_EVAL}"
@@ -36,12 +36,7 @@ before_script:
 
 script:
   # Run cmake, then compile and run tests with make
-  - if [ "${CXX}" == "g++-8" ]; then
-      cmake -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TEST=ON ..;
-    fi
-  - if [ "${CXX}" == "clang++-6.0" ]; then
-      cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TEST=ON ..;
-    fi
+  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_TEST=ON ..;
   - make -j$(nproc)
   - ctest -V
 
