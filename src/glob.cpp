@@ -48,8 +48,10 @@ namespace cppglob {
           ret.push_back(x);
           fs::path path = (dirname.empty()) ? x : (dirname / x);
 
-          for (auto&& y : rlistdir(path, dironly)) {
-            ret.push_back(x / y);
+          if (fs::is_directory(path)) {
+            for (auto&& y : rlistdir(path, dironly)) {
+              ret.push_back(x / y);
+            }
           }
         }
       }
