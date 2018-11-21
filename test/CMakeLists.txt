@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0)
 
+add_subdirectory(
+  ${PROJECT_SOURCE_DIR}/3rdparty/googletest
+  ${CMAKE_BINARY_DIR}/googletest)
 find_package(Threads REQUIRED)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/cppglob.dir/src)

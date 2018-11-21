@@ -76,7 +76,6 @@ add_subdirectory(src)
 
 if(BUILD_TEST)
   enable_testing()
-  add_subdirectory(${PROJECT_SOURCE_DIR}/3rdparty/googletest)
   add_subdirectory(test)
 endif()
 
