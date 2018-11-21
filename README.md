@@ -1,6 +1,6 @@
 # C++ GLOB library
 
-[![Build Status](https://travis-ci.org/machida-mn/cppglob.svg?branch=master)](https://travis-ci.org/machida-mn/cppglob) [![codecov](https://codecov.io/gh/machida-mn/cppglob/branch/master/graph/badge.svg)](https://codecov.io/gh/machida-mn/cppglob)
+[![Build Status](https://travis-ci.org/machida-mn/cppglob.svg?branch=master)](https://travis-ci.org/machida-mn/cppglob)
 
 `cppglob` is a C++ port of Python `glob` module.
 
