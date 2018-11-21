@@ -72,6 +72,7 @@ namespace cppglob {
     glob_iterator& swap(glob_iterator& other) {
       std::swap(M_pathnames, other.M_pathnames);
       std::swap(M_index, other.M_index);
+      return *this;
     }
 
    protected:
