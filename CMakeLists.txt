@@ -43,7 +43,11 @@ if(MSVC)
 endif()
 
 # compiler requirements
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (MSVC)
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.14)
+    message(WARNING "MSVC < 19.14 is currently not supported. Some errors may be caused during build")
+  endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.1)
     message(WARNING "GCC < 8.1 is currently not supported. Some errors may be caused during build")
   endif()
