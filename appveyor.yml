@@ -1,0 +1,36 @@
+branches:
+  only:
+    - master
+clone_folder: C:\projects\cppglob
+image:
+  - Visual Studio 2017
+configuration:
+  - Release
+platform:
+  - x64
+  - x86
+environment:
+  matrix:
+    - arch: Win64
+    # - arch: #does not work, Release|x64 not a valid target
+matrix:
+  fast_finish: true
+
+# skip unsupported combinations
+init:
+  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017" )
+  - echo %generator%
+
+before_build:
+  - cd C:\projects\cppglob
+  - git submodule init
+  - git submodule update
+  - cmake --version
+
+build_script:
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TEST=ON -G %generator%
+  - cmake --build .
+  - ctest -C Debug -V
