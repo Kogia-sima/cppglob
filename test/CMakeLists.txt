@@ -5,7 +5,7 @@ add_subdirectory(
   ${CMAKE_BINARY_DIR}/googletest)
 find_package(Threads REQUIRED)
 
-set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/cppglob.dir/src)
+set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
 
 include_directories(${gtest_SOURCE_DIR}/include)
 
@@ -26,32 +26,43 @@ add_test(
   COMMAND $<TARGET_FILE:cppglob_test>
 )
 
-add_custom_target(run_test
-  COMMAND mkdir -p coverage
-  COMMAND ${CMAKE_CTEST_COMMAND} -V > ctest.log
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  DEPENDS cppglob_test
-  COMMENT "Running test"
-)
 
-add_custom_target(gcov
-  COMMAND echo "=============== GCOV ==============="
-  COMMAND gcov -b -o ${OBJECT_DIR} ${cpp_sources}
-  ${OBJECT_DIR}/*.gcno > gcov.log
-  COMMAND cat gcov.log |sed '$$s/^Lines executed/TOTAL/'
-  COMMAND echo "=============== END ==============="
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage
-  COMMENT "Display test coverage"
-)
-add_dependencies(gcov run_test)
+if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    string(REGEX MATCH "^[0-9]*" gcc_major ${CMAKE_CXX_COMPILER_VERSION})
+    message(STATUS "GCC major version: ${gcc_major}")
+    if ("${gcc_major}" STREQUAL "")
+      set(gcov_cmd "gcov")
+    else()
+      set(gcov_cmd "gcov-${gcc_major}")
+    endif()
+  else()
+    set(gcov_cmd "gcov")
+  endif()
 
-add_custom_target(lcov
-  COMMAND lcov -c -b ${CMAKE_SOURCE_DIR}/src -d ${OBJECT_DIR} -o coverage/lcov.log
-  COMMAND genhtml --demangle-cpp -o coverage/html coverage/lcov.log
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  COMMENT "Generating test coverage report"
-)
-add_dependencies(lcov run_test)
+  add_custom_target(reset_counter
+    COMMAND lcov -d ${OBJECT_DIR} --zerocounters
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Resetting test counter"
+  )
 
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES coverage)
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/ctest.log)
+  add_custom_target(run_test
+    COMMAND mkdir -p coverage
+    COMMAND ${CMAKE_CTEST_COMMAND} -V > ctest.log
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    DEPENDS cppglob_test reset_counter
+    COMMENT "Running test"
+  )
+
+  add_custom_target(lcov
+    COMMAND lcov --gcov-tool ${gcov_cmd} -c -b ${CMAKE_SOURCE_DIR}/src -d ${OBJECT_DIR} -o coverage.info
+    COMMAND lcov --remove coverage.info '/usr/*' -o coverage.info
+    COMMAND genhtml --demangle-cpp -o coverage coverage.info
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    DEPENDS run_test
+    COMMENT "Generating test coverage report"
+  )
+
+  set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/coverage.info)
+  set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/coverage)
+endif()
