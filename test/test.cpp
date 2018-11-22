@@ -5,7 +5,7 @@
 
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>
-#include <cppglob/glob_iterator.hpp>
+#include <cppglob/iglob.hpp>
 
 namespace fs = std::filesystem;
 

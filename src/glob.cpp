@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>
-#include <cppglob/glob_iterator.hpp>
+#include <cppglob/iglob.hpp>
 
 namespace cppglob {
   using regex_type = std::basic_regex<char_type>;
