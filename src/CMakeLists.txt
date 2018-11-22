@@ -36,3 +36,19 @@ if (BUILD_STATIC)
     ARCHIVE DESTINATION lib
     COMPONENT libs)
 endif()
+
+# create pkg-config file
+if (STDFILESYSTEM_LIBRARY)
+  set(STDFILESYSTEM_LDFLAGS "-l${STDFILESYSTEM_LIBRARY}")
+else()
+  set(STDFILESYSTEM_LDFLAGS "")
+endif()
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/cppglob.pc.in
+  ${CMAKE_BINARY_DIR}/cppglob.pc
+  @ONLY)
+
+install(
+  FILES ${CMAKE_BINARY_DIR}/cppglob.pc
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
