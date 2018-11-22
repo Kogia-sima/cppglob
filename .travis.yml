@@ -32,13 +32,22 @@ matrix:
       osx_image: xcode9.4
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++ && BUILD_TYPE=Release"
+      cache:
+        directories:
+          - /usr/local/opt/llvm
 
 install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-      echo "Installing clang..."
-      brew install --with-clang llvm
-      CC_PREFIX=$(brew --prefix llvm)
+      if [ -d /usr/local/opt/llvm/bin ]; then
+        echo "Clang cache found."
+      else
+        echo "Installing clang..."
+        mv /usr/local/opt/llvm /usr/local/opt/llvm.old
+        brew install --with-clang llvm
+        cp -rv /usr/local/opt/llvm.old/* /usr/local/opt/llvm/
+      fi
+      CC_PREFIX=/usr/local/opt/llvm
       export PATH="${CC_PREFIX}/bin:$PATH"
       export LDFLAGS="-L${CC_PREFIX}/lib -Wl,-rpath,${CC_PREFIX}/lib"
       export CPPFLAGS="-I${CC_PREFIX}/include"
