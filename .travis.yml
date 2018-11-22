@@ -1,5 +1,4 @@
 language: cpp
-dist: trusty
 sudo: false
 
 matrix:
@@ -13,7 +12,7 @@ matrix:
             - g++-8
             - lcov
       env:
-        - MATRIX_EVAL="CXX=g++-8 && BUILD_TYPE=Coverage"
+        - MATRIX_EVAL="CXX=g++-8 && BUILD_TYPE=Release"
 
     - os: linux
       addons:
@@ -27,7 +26,23 @@ matrix:
             - clang-6.0
             - libstdc++-8-dev
       env:
-        - MATRIX_EVAL="CXX=clang++-6.0 && BUILD_TYPE=Debug"
+        - MATRIX_EVAL="CXX=clang++-6.0 && BUILD_TYPE=Release"
+
+    - os: osx
+      osx_image: xcode9.4
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++ && BUILD_TYPE=Release"
+
+install:
+  - |
+    if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      echo "Installing clang..."
+      brew install --with-clang llvm
+      CC_PREFIX=$(brew --prefix llvm)
+      export PATH="${CC_PREFIX}/bin:$PATH"
+      export LDFLAGS="-L${CC_PREFIX}/lib -Wl,-rpath,${CC_PREFIX}/lib"
+      export CPPFLAGS="-I${CC_PREFIX}/include"
+    fi
 
 before_script:
   - eval "${MATRIX_EVAL}"
@@ -37,7 +52,7 @@ before_script:
 script:
   # Run cmake, then compile and run tests with make
   - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_TEST=ON ..;
-  - make -j$(nproc)
+  - make VERBOSE=1
   - ctest -V
 
 # code coverage (deprecated)
