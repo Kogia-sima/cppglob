@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.1.0)
 
+find_package(StdFileSystem)
+
 # google test
 find_package(GTest)
 
@@ -23,9 +25,9 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(cppglob_test ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
 
 if(BUILD_SHARED)
-  target_link_libraries(cppglob_test PRIVATE cppglob stdc++fs ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+  target_link_libraries(cppglob_test PRIVATE cppglob ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
 else()
-  target_link_libraries(cppglob_test PRIVATE cppglob_static stdc++fs ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+  target_link_libraries(cppglob_test PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
 endif()
 
 add_test(
