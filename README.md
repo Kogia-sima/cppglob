@@ -15,9 +15,9 @@ Currently `cppglob` supports the following functions.
 ## Prerequisites
 
 - OS: Unix-like system (Linux, OSX, WSL, Cygwin, etc.)
-- Compiler: must support the following C++17 features.
-    - `<filesystem>` library
-    - `<string_view>` library
+- Compiler: Currently the following compilers are supported.
+    - GCC >= 8.1
+    - Clang >= 3.5.0 (with libstdc++), >= 7.0.0 (with libc++)
 - Cmake >= 3.1.0
 
 ## Install
@@ -54,5 +54,4 @@ int main() {
 - C++14 support (with `<experimental/filesystem>`)
 - Automatically generate single header file (in progress)
 - `cppglob::escape` function support
-- Test coverage analysis
 - Performance improvement
