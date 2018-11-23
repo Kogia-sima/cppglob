@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-project(cppglob VERSION 0.1.0 LANGUAGES CXX)
+project(cppglob VERSION 1.0.0 LANGUAGES CXX)
 
 option(BUILD_STATIC "Build static library" OFF)
 option(BUILD_SHARED "Build shared library" ON)
