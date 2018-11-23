@@ -1,3 +1,9 @@
+/**
+ * @file cppglob/fnmatch.hpp
+ * @brief Filename matching with shell patterns
+ * @copyright 2018 Ryohei Machida
+ */
+
 #ifndef CPPGLOB_CONFIG_HPP
 #define CPPGLOB_CONFIG_HPP
 
