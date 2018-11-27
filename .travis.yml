@@ -1,6 +1,11 @@
 language: cpp
 sudo: false
 
+# ignore tags
+branches:
+  except:
+    - /^v[0-9]/
+
 matrix:
   include:
     - os: linux
