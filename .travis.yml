@@ -39,18 +39,20 @@ matrix:
         - MATRIX_EVAL="CC=clang && CXX=clang++ && BUILD_TYPE=Release"
       cache:
         directories:
-          - /usr/local/opt/llvm
+          - /usr/local/Cellar/llvm/7.0.0_1
+        timeout: 1000
 
 install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       if [ -d /usr/local/opt/llvm/bin ]; then
         echo "Clang cache found."
+        ln -s /usr/local/Cellar/llvm/7.0.0_1 /usr/local/opt/llvm
       else
         echo "Installing clang..."
-        mv /usr/local/opt/llvm /usr/local/opt/llvm.old
+        rm -rf /usr/local/Cellar/llvm/7.0.0_1
         brew install --with-clang llvm
-        cp -rv /usr/local/opt/llvm.old/* /usr/local/opt/llvm/
+        ls -l /usr/local/Cellar/llvm/7.0.0_1
       fi
       CC_PREFIX=/usr/local/opt/llvm
       export PATH="${CC_PREFIX}/bin:$PATH"
