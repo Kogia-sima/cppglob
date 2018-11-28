@@ -49,68 +49,109 @@ namespace cppglob {
 
     glob_iterator() noexcept = default;
 
-    explicit glob_iterator(const std::vector<fs::path>& pathnames)
-        : M_pathnames(pathnames) {}
+    explicit glob_iterator(const std::vector<fs::path>& pathnames);
 
-    explicit glob_iterator(std::vector<fs::path>&& pathnames) noexcept
-        : M_pathnames(std::move(pathnames)) {}
+    explicit glob_iterator(std::vector<fs::path>&& pathnames) noexcept;
 
     glob_iterator(const glob_iterator& other) = default;
 
-    glob_iterator(glob_iterator&& other) noexcept
-        : M_pathnames(std::move(other.M_pathnames)) {
-      M_index = other.M_index;
-    }
+    glob_iterator(glob_iterator&& other) noexcept;
 
     glob_iterator& operator=(const glob_iterator& other) = default;
 
-    glob_iterator& operator=(glob_iterator&& other) {
-      M_pathnames = std::move(other.M_pathnames);
-      M_index = other.M_index;
-      return *this;
-    }
+    glob_iterator& operator=(glob_iterator&& other);
 
-    reference operator*() { return M_pathnames[M_index]; }
-    const_reference operator*() const { return M_pathnames[M_index]; }
+    reference operator*();
+    const_reference operator*() const;
 
-    pointer operator->() { return &M_pathnames[M_index]; }
-    const_pointer operator->() const { return &M_pathnames[M_index]; }
+    pointer operator->();
+    const_pointer operator->() const;
 
-    bool operator==(const glob_iterator& other) const {
-      return (finished() && other.finished()) ||
-             (!finished() && !other.finished() && M_index == other.M_index);
-    }
+    bool operator==(const glob_iterator& other) const;
 
-    bool operator!=(const glob_iterator& other) const {
-      return !(*this == other);
-    }
+    bool operator!=(const glob_iterator& other) const;
 
-    glob_iterator& operator++() {
-      ++M_index;
-      return *this;
-    }
+    glob_iterator& operator++();
 
-    glob_iterator operator++(int) {
-      glob_iterator old(*this);
-      ++M_index;
-      return old;
-    }
+    glob_iterator operator++(int);
 
-    glob_iterator& swap(glob_iterator& other) {
-      std::swap(M_pathnames, other.M_pathnames);
-      std::swap(M_index, other.M_index);
-      return *this;
-    }
+    glob_iterator& swap(glob_iterator& other);
 
    protected:
-    bool finished() const {
-      return M_pathnames.empty() || M_index >= M_pathnames.size();
-    }
+    bool finished() const;
 
    private:
     std::vector<fs::path> M_pathnames;
     std::size_t M_index = 0L;
   };
+
+  CPPGLOB_INLINE glob_iterator::glob_iterator(
+      const std::vector<fs::path>& pathnames)
+      : M_pathnames(pathnames) {}
+
+  CPPGLOB_INLINE glob_iterator::glob_iterator(
+      std::vector<fs::path>&& pathnames) noexcept
+      : M_pathnames(std::move(pathnames)) {}
+
+  CPPGLOB_INLINE glob_iterator::glob_iterator(glob_iterator&& other) noexcept
+      : M_pathnames(std::move(other.M_pathnames)) {
+    M_index = other.M_index;
+  }
+
+  CPPGLOB_INLINE glob_iterator& glob_iterator::operator=(
+      glob_iterator&& other) {
+    M_pathnames = std::move(other.M_pathnames);
+    M_index = other.M_index;
+    return *this;
+  }
+
+  CPPGLOB_INLINE glob_iterator::reference glob_iterator::operator*() {
+    return M_pathnames[M_index];
+  }
+  CPPGLOB_INLINE glob_iterator::const_reference glob_iterator::operator*()
+      const {
+    return M_pathnames[M_index];
+  }
+
+  CPPGLOB_INLINE glob_iterator::pointer glob_iterator::operator->() {
+    return &M_pathnames[M_index];
+  }
+  CPPGLOB_INLINE glob_iterator::const_pointer glob_iterator::operator->()
+      const {
+    return &M_pathnames[M_index];
+  }
+
+  CPPGLOB_INLINE bool glob_iterator::operator==(
+      const glob_iterator& other) const {
+    return (finished() && other.finished()) ||
+           (!finished() && !other.finished() && M_index == other.M_index);
+  }
+
+  CPPGLOB_INLINE bool glob_iterator::operator!=(
+      const glob_iterator& other) const {
+    return !(*this == other);
+  }
+
+  CPPGLOB_INLINE glob_iterator& glob_iterator::operator++() {
+    ++M_index;
+    return *this;
+  }
+
+  CPPGLOB_INLINE glob_iterator glob_iterator::operator++(int) {
+    glob_iterator old(*this);
+    ++M_index;
+    return old;
+  }
+
+  CPPGLOB_INLINE glob_iterator& glob_iterator::swap(glob_iterator& other) {
+    std::swap(M_pathnames, other.M_pathnames);
+    std::swap(M_index, other.M_index);
+    return *this;
+  }
+
+  CPPGLOB_INLINE bool glob_iterator::finished() const {
+    return M_pathnames.empty() || M_index >= M_pathnames.size();
+  }
 }  // namespace cppglob
 
 #endif

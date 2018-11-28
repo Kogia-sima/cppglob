@@ -96,6 +96,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
   endif()
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  add_definitions("-DCPPGLOB_COVERAGE")
 endif()
 
 # Use libc++ in Mac OSX
