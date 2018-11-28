@@ -25,7 +25,7 @@ with the -std=c++17 or -std=gnu++17 compiler options.
 
 #ifdef CPPGLOB_COVERAGE
 #  define CPPGLOB_EXPORT __attribute__((visibility("default")))
-#  define CPPGLOB_LOCAL __attribute__((visibility("hidden")))
+#  define CPPGLOB_LOCAL
 #  define CPPGLOB_INLINE CPPGLOB_LOCAL
 #elif (defined _WIN32 || defined WINCE || defined __CYGWIN__)
 #  ifdef CPPGLOB_BUILDING

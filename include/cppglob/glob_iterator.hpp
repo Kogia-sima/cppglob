@@ -47,17 +47,17 @@ namespace cppglob {
     using const_reference = const typename fs::path&;
     using iterator_category = std::forward_iterator_tag;
 
-    glob_iterator() noexcept = default;
+    glob_iterator() noexcept;
 
     explicit glob_iterator(const std::vector<fs::path>& pathnames);
 
     explicit glob_iterator(std::vector<fs::path>&& pathnames) noexcept;
 
-    glob_iterator(const glob_iterator& other) = default;
+    glob_iterator(const glob_iterator& other);
 
     glob_iterator(glob_iterator&& other) noexcept;
 
-    glob_iterator& operator=(const glob_iterator& other) = default;
+    glob_iterator& operator=(const glob_iterator& other);
 
     glob_iterator& operator=(glob_iterator&& other);
 
@@ -85,6 +85,10 @@ namespace cppglob {
     std::size_t M_index = 0L;
   };
 
+#if (!defined CPPGLOB_COVERAGE || defined CPPGLOB_BUILDING)
+
+  CPPGLOB_INLINE glob_iterator::glob_iterator() noexcept = default;
+
   CPPGLOB_INLINE glob_iterator::glob_iterator(
       const std::vector<fs::path>& pathnames)
       : M_pathnames(pathnames) {}
@@ -93,10 +97,15 @@ namespace cppglob {
       std::vector<fs::path>&& pathnames) noexcept
       : M_pathnames(std::move(pathnames)) {}
 
+  CPPGLOB_INLINE glob_iterator::glob_iterator(const glob_iterator&) = default;
+
   CPPGLOB_INLINE glob_iterator::glob_iterator(glob_iterator&& other) noexcept
       : M_pathnames(std::move(other.M_pathnames)) {
     M_index = other.M_index;
   }
+
+  CPPGLOB_INLINE glob_iterator& glob_iterator::operator=(
+      const glob_iterator& other) = default;
 
   CPPGLOB_INLINE glob_iterator& glob_iterator::operator=(
       glob_iterator&& other) {
@@ -152,6 +161,9 @@ namespace cppglob {
   CPPGLOB_INLINE bool glob_iterator::finished() const {
     return M_pathnames.empty() || M_index >= M_pathnames.size();
   }
+
+#endif
+
 }  // namespace cppglob
 
 #endif

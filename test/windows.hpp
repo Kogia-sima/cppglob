@@ -48,6 +48,34 @@ void unorderd_compare_results(const std::vector<fs::path>& actual,
   }
 }
 
+TEST(glob_iterator, generic) {
+  std::vector<fs::path> dirs = {L"a/", L"a/b/", L"a/b/c/"};
+  cppglob::glob_iterator it(dirs), end;
+  EXPECT_EQ(std::distance(it, end), 3);
+  EXPECT_EQ((*it).native(), L"a/");
+  it++;
+  EXPECT_EQ(it->native(), L"a/b/");
+
+  const auto it2 = std::move(it);
+  EXPECT_EQ(std::distance(it2, end), 2);
+  EXPECT_EQ((*it2).native(), L"a/b/");
+  EXPECT_EQ(it2->native(), L"a/b/");
+
+  EXPECT_NE(it2, end);
+
+  cppglob::glob_iterator it3 = it2;
+  it3.swap(it);
+
+  ++it;
+  it++;
+
+  EXPECT_TRUE(it == end);
+
+  cppglob::glob_iterator it4(std::move(dirs));
+  it3 = std::move(it4);
+  EXPECT_EQ(std::distance(it3, end), 3);
+}
+
 TEST(fnmatch, translate) {
   EXPECT_EQ(cppglob::translate(L"*"), L".*");
   EXPECT_EQ(cppglob::translate(L"*.*"), L".*\\..*");

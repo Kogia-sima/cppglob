@@ -1,3 +1,7 @@
+#ifdef CPPGLOB_BUILDING
+#  undef CPPGLOB_BUILDING
+#endif
+
 #include <gtest/gtest.h>
 
 #include <cppglob/config.hpp>
