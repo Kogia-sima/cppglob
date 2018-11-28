@@ -29,13 +29,18 @@
 #include <cppglob/iglob.hpp>
 
 namespace cppglob {
-  using regex_type = std::basic_regex<char_type>;
-
-  static regex_type magic_check(CStr("([*?[])"));
-
   namespace detail {
     CPPGLOB_INLINE bool has_magic(const string_type& str) {
-      return std::regex_search(str, magic_check);
+      static const string_view_type magics = "*?[";
+      for (const char& c : str) {
+        for (const char& magic : magics) {
+          if (c == magic) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     }
 
     CPPGLOB_INLINE bool ishidden(const fs::path& pathname) {

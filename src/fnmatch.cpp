@@ -90,7 +90,7 @@ namespace cppglob {
   string_type translate(const string_view_type& pat) {
     std::size_t i = 0L, n = pat.size();
     string_type res;
-    res.reserve(pat.size());
+    res.reserve(pat.size() + 5);
 
     while (i < n) {
       auto c = pat[i];
