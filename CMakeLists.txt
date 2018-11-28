@@ -5,9 +5,13 @@ project(cppglob VERSION 1.0.0 LANGUAGES CXX)
 option(BUILD_STATIC "Build static library" OFF)
 option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_TEST "Build test" OFF)
+option(WITH_COTIRE "Use cotire to create precompiled header before build" OFF)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-include(cotire)
+
+if (WITH_COTIRE)
+  include(cotire)
+endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
   set(BUILD_TEST ON)

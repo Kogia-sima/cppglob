@@ -10,7 +10,9 @@ if (BUILD_SHARED)
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
 
-  cotire(cppglob)
+  if (WITH_COTIRE)
+    cotire(cppglob)
+  endif()
 
   install(
     TARGETS cppglob
@@ -28,7 +30,9 @@ if (BUILD_STATIC)
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
 
-  cotire(cppglob_static)
+  if (WITH_COTIRE)
+    cotire(cppglob_static)
+  endif()
 
   install(
     TARGETS cppglob_static
