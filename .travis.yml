@@ -17,7 +17,7 @@ matrix:
             - g++-8
             - lcov
       env:
-        - MATRIX_EVAL="CXX=g++-8 && BUILD_TYPE=Release"
+        - MATRIX_EVAL="CXX=g++-8 && BUILD_TYPE=Coverage"
 
     - os: linux
       addons:
@@ -71,18 +71,18 @@ script:
   - make VERBOSE=1
   - ctest -V
 
-# code coverage (deprecated)
-# after_success:
-#   - if [ "${CXX}" == "g++-8" ]; then
-#       git clone https://github.com/linux-test-project/lcov;
-#       pushd lcov;
-#       git checkout e675080;
-#       popd;
-#       ./lcov/bin/lcov --gcov-tool `which gcov-8` -c -d src/CMakeFiles/cppglob.dir -b ../src -o coverage.info;
-#       ./lcov/bin/lcov --remove coverage.info '/usr/*' -o coverage.info;
-#       ./lcov/bin/lcov --list coverage.info;
-#       bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports";
-#     fi
+# code coverage
+after_success:
+  - if [ "${BUILD_TYPE}" == "Coverage" ]; then
+      git clone https://github.com/linux-test-project/lcov;
+      pushd lcov;
+      git checkout e675080;
+      popd;
+      ./lcov/bin/lcov --gcov-tool `which gcov-8` -c -d src/CMakeFiles/cppglob.dir -b ../src -o coverage.info;
+      ./lcov/bin/lcov --remove coverage.info '/usr/*' -o coverage.info;
+      ./lcov/bin/lcov --list coverage.info;
+      bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports";
+    fi
 
 after_failure:
   # Dumps any logs so you can read the stderr
