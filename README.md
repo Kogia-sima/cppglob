@@ -5,6 +5,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/01dto0a1vi94ayeu/branch/master?svg=true)](https://ci.appveyor.com/project/machida-mn/cppglob/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ea442a1cd624c62af285e7de532319a)](https://www.codacy.com/app/machida-mn/cppglob?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=machida-mn/cppglob&amp;utm_campaign=Badge_Grade)
 [![Report](https://inspecode.rocro.com/badges/github.com/machida-mn/cppglob/report?token=y0OJyNYwrlrq2ON7VwNjczZEOqvWZykWH9g71RJlpwQ&branch=master)](https://inspecode.rocro.com/reports/github.com/machida-mn/cppglob/branch/master/summary)
+[![codecov](https://codecov.io/gh/machida-mn/cppglob/branch/master/graph/badge.svg)](https://codecov.io/gh/machida-mn/cppglob)
 [![GitHub license](https://img.shields.io/github/license/machida-mn/cppglob.svg)](https://github.com/machida-mn/cppglob/blob/master/LICENSE.txt)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
