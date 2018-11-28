@@ -49,10 +49,10 @@ namespace cppglob {
 
     glob_iterator() noexcept = default;
 
-    glob_iterator(const std::vector<fs::path>& pathnames)
+    explicit glob_iterator(const std::vector<fs::path>& pathnames)
         : M_pathnames(pathnames) {}
 
-    glob_iterator(std::vector<fs::path>&& pathnames) noexcept
+    explicit glob_iterator(std::vector<fs::path>&& pathnames) noexcept
         : M_pathnames(std::move(pathnames)) {}
 
     glob_iterator(const glob_iterator& other) = default;
