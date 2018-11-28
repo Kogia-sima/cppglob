@@ -11,17 +11,17 @@
 
 Currently `cppglob` supports the following functions.
 
-- `glob(pattern, recursive = false)`
-- `iglob(pattern, recursive = false)`
+-   `glob(pattern, recursive = false)`
+-   `iglob(pattern, recursive = false)`
 
 ## Prerequisites
 
-- OS: Unix-like system (Linux, OSX, WSL, Cygwin, etc.)
-- Compiler: Currently the following compilers are supported.
-    - MSVC >= 19.14 (Visual Studio 2017 version 15.7.1)
-    - GCC >= 8.1
-    - Clang >= 3.5.0 (with libstdc++), >= 7.0.0 (with libc++)
-- Cmake >= 3.1.0
+-   OS: Unix-like system (Linux, OSX, WSL, Cygwin, etc.)
+-   Compiler: Currently the following compilers are supported.
+    -   MSVC >= 19.14 (Visual Studio 2017 version 15.7.1)
+    -   GCC >= 8.1
+    -   Clang >= 3.5.0 (with libstdc++), >= 7.0.0 (with libc++)
+-   Cmake >= 3.1.0
 
 ## Install
 
@@ -52,7 +52,7 @@ int main() {
 
 ## TODO
 
-- C++14 support (with `<experimental/filesystem>`)
-- Automatically generate single header file (in progress)
-- `cppglob::escape` function support
-- Performance improvement
+-   C++14 support (with `<experimental/filesystem>`)
+-   Automatically generate single header file (in progress)
+-   `cppglob::escape` function support
+-   Performance improvement
