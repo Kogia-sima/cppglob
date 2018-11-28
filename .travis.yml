@@ -45,7 +45,7 @@ matrix:
 install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-      if [ -d /usr/local/opt/llvm/bin ]; then
+      if [ -e /usr/local/Cellar/llvm/7.0.0_1/bin ]; then
         echo "Clang cache found."
         ln -s /usr/local/Cellar/llvm/7.0.0_1 /usr/local/opt/llvm
       else
