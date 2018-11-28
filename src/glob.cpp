@@ -31,7 +31,7 @@
 namespace cppglob {
   namespace detail {
     CPPGLOB_INLINE bool has_magic(const string_type& str) {
-      static const string_view_type magics = "*?[";
+      static const string_view_type magics = CStr("*?[");
       for (const char& c : str) {
         for (const char& magic : magics) {
           if (c == magic) {
