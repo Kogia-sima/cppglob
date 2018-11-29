@@ -18,7 +18,7 @@ Currently `cppglob` supports the following functions.
 
 ## Prerequisites
 
--   OS: Unix-like system (Linux, OSX, WSL, Cygwin, etc.)
+-   OS: Windows, OSX, Linux
 -   Compiler: Currently the following compilers are supported.
     -   MSVC >= 19.14 (Visual Studio 2017 version 15.7.1)
     -   GCC >= 8.1
@@ -38,7 +38,14 @@ $ sudo make install
 ## Example
 
 ```cpp
-#include <cppglob/glob.hpp>
+#include <vector>
+#include <list>
+#include <algorithm>
+#include <filesystem>
+#include <cppglob/glob.hpp>  // cppglob::glob
+#include <cppglob/iglob.hpp>  // cppglob::iglob
+
+namespace fs = std::filesystem;
 
 int main() {
     // get all files and directories in the same directory
@@ -49,12 +56,23 @@ int main() {
     
     // get all text files under the directory dir_b/ (recursively searched)
     std::vector<fs::path> files = cppglob::glob("dir_b/**/*.txt", true);
+
+    // get all pdf files in docs/ directory in order of file name.
+    std::vector<fs::path> pdf_files = cpp::glob("docs/*.pdf");
+    std::sort(pdf_files.begin(), pdf_files.end());
+
+    // get all pdf files in docs/ directory in order of file name. (with iglob)
+    cppglob::glob_iterator it = cppglob::iglob("docs/*.pdf"), end;
+    std::list<fs::path> pdf_file_list(it, end);
+    pdf_file_list.sort();
 }
 ```
 
 ## TODO
 
--   C++14 support (with `<experimental/filesystem>`)
--   Automatically generate single header file (in progress)
+-   Conan package
+-   Nuget package
+-   C++14 support (with `<experimental/filesystem>` or `<boost/filesystem>`)
+-   support CPPGLOB\_HEADER\_ONLY macro
 -   `cppglob::escape` function support
 -   Performance improvement
