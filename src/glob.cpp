@@ -123,8 +123,13 @@ namespace cppglob {
                                                bool dironly) {
       assert(isrecursive(pattern));
       std::vector<fs::path> result = rlistdir(dirname, dironly);
-      result.push_back(std::move(result.front()));
-      result[0] = fs::path("");
+
+      if (result.empty()) {
+        result.emplace_back("");
+      } else {
+        result.push_back(std::move(result.front()));
+        result[0] = fs::path("");
+      }
 
       return result;
     }
