@@ -53,8 +53,13 @@ namespace cppglob {
 
     CPPGLOB_INLINE std::vector<fs::path> iterdir(const fs::path& dirname,
                                                  bool dironly) {
-      fs::directory_iterator files{(dirname.empty()) ? fs::current_path() :
-                                                       dirname};
+      fs::path base_dir = (dirname.empty()) ? fs::current_path() : dirname;
+
+      if (!fs::is_directory(base_dir)) {
+        return std::vector<fs::path>();
+      }
+
+      fs::directory_iterator files(base_dir);
 
       std::vector<fs::path> ret;
 
