@@ -47,6 +47,12 @@ namespace cppglob {
    */
   CPPGLOB_EXPORT std::vector<fs::path> glob(const fs::path& pathname,
                                             bool recursive = false);
+
+  /**
+   * @brief Escape all special characters.
+   * @param pathname pattern string to be escaped
+   */
+  CPPGLOB_EXPORT fs::path escape(const fs::path& pathname);
 }  // namespace cppglob
 
 #endif
