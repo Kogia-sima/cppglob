@@ -184,3 +184,13 @@ TEST(glob, recursive) {
 
   unorderd_compare_results(vec, corrects);
 }
+
+TEST(glob, escape) {
+  EXPECT_EQ(cppglob::escape("*"), fs::path("[*]"));
+  EXPECT_EQ(cppglob::escape("*.*"), fs::path("[*].[*]"));
+  EXPECT_EQ(cppglob::escape("file[1-9].txt"), fs::path("file[[]1-9].txt"));
+  EXPECT_EQ(cppglob::escape("file[!1-9].txt"), fs::path("file[[]!1-9].txt"));
+  EXPECT_EQ(cppglob::escape("file[^1-9\\].txt"),
+            fs::path("file[[]^1-9\\].txt"));
+  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a"), fs::path("([]-+{}()[?]$.a)"));
+}
