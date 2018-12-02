@@ -195,6 +195,59 @@ namespace cppglob {
 
       return files;
     }
+
+#ifdef CPPGLOB_IS_WINDOWS
+    CPPGLOB_INLINE string_view_type drive_name(const fs::path& pathname) {
+      const string_type& path_str = pathname.native();
+      if (path_str.size() == 2 && path_str[1] == L':') {
+        return string_view_type(&path_str[0], 2);
+      }
+      if (path_str.size() >= 3) {
+        const auto is_sep = [](const char_type& c) { c == L'\\' || c == L'/'; };
+        if (path_str.find_first_not_of(L"\\/") == 2) {
+          // is a UNC path:
+          // vvvvvvvvvvvvvvvvvvvv drive letter or UNC path
+          // \\machine\mountpoint\directory\etc\...
+          //           directory ^^^^^^^^^^^^^^^
+          const auto index = path_str.find_first_of(L"\\/", 3);
+          if (index == string_type::npos) {
+            return string_view_type();
+          }
+          auto index2 = path.find_first_of(L"\\/", index + 1);
+          // a UNC path can't have two slashes in a row
+          // (after the initial two)
+          if (index2 == index + 1) {
+            return string_view_type();
+          }
+          if (index2 == string_type::npos) {
+            index2 = path_str.size();
+          }
+          return string_view_type(&path_str[0], index2);
+        }
+      }
+      return string_view_type();
+    }
+#endif
+
+    CPPGLOB_INLINE string_type& escape_magic(const string_view_type& pathname,
+                                             string_type& output) {
+      static const auto is_magic = [](const char_type& c) -> bool {
+        return c == CStr('*') || c == CStr('?') || c == CStr('[');
+      };
+
+      output.reserve(output.size() + pathname.size());
+
+      for (const char_type& c : pathname) {
+        if (is_magic(c)) {
+          output.push_back('[');
+          output.push_back(c);
+          output.push_back(']');
+        } else {
+          output.push_back(c);
+        }
+      }
+      return output;
+    }
   }  // namespace detail
 
   std::vector<fs::path> glob(const fs::path& pathname, bool recursive) {
@@ -222,4 +275,19 @@ namespace cppglob {
   }
 
   glob_iterator iglob() { return glob_iterator(); }
+
+  fs::path escape(const fs::path& pathname) {
+#ifndef CPPGLOB_IS_WINDOWS
+    const string_view_type main_path{&pathname.native()[0],
+                                     pathname.native().size()};
+    string_type output;
+#else
+    const string_view_type drive = detail::drive_name(pathname);
+    string_type output = drive;
+    const string_view_type main_path{&drive[drive.size()],
+                                     pathname.native().size() - drive.size()};
+#endif
+    detail::escape_magic(main_path, output);
+    return fs::path(std::move(output));
+  }
 }  // namespace cppglob
