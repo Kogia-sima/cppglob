@@ -213,7 +213,7 @@ namespace cppglob {
           if (index == string_type::npos) {
             return string_view_type();
           }
-          auto index2 = path.find_first_of(L"\\/", index + 1);
+          auto index2 = path_str.find_first_of(L"\\/", index + 1);
           // a UNC path can't have two slashes in a row
           // (after the initial two)
           if (index2 == index + 1) {
@@ -283,7 +283,7 @@ namespace cppglob {
     string_type output;
 #else
     const string_view_type drive = detail::drive_name(pathname);
-    string_type output = drive;
+    string_type output(&drive[0], drive.size());
     const string_view_type main_path{&drive[drive.size()],
                                      pathname.native().size() - drive.size()};
 #endif
