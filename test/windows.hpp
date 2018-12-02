@@ -187,11 +187,11 @@ TEST(glob, recursive) {
 }
 
 TEST(glob, escape) {
-  EXPECT_EQ(cppglob::escape(L"*"), fs::path(L"[*]"));
-  EXPECT_EQ(cppglob::escape(L"*.*"), fs::path(L"[*].[*]"));
-  EXPECT_EQ(cppglob::escape(L"file[1-9].txt"), fs::path(L"file[[]1-9].txt"));
-  EXPECT_EQ(cppglob::escape(L"file[!1-9].txt"), fs::path(L"file[[]!1-9].txt"));
-  EXPECT_EQ(cppglob::escape(L"file[^1-9\\].txt"),
-            fs::path(L"file[[]^1-9\\].txt"));
-  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a"), fs::path("[[]]-+{}()[?]$.a"));
+  EXPECT_EQ(cppglob::escape(L"*").native(), L"[*]");
+  EXPECT_EQ(cppglob::escape(L"*.*").native(), L"[*].[*]");
+  EXPECT_EQ(cppglob::escape(L"file[1-9].txt").native(), L"file[[]1-9].txt");
+  EXPECT_EQ(cppglob::escape(L"file[!1-9].txt").native(), L"file[[]!1-9].txt");
+  EXPECT_EQ(cppglob::escape(L"file[^1-9\\].txt").native(),
+            L"file[[]^1-9\\].txt");
+  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), L"[[]]-+{}()[?]$.a");
 }

@@ -115,8 +115,8 @@ TEST(glob, iglob) {
   cppglob::glob_iterator it2 = cppglob::iglob("**", true);
   vec = std::vector<fs::path>(it2, end);
 
-  unorderd_compare_results(vec, {"apple", "banana", "apple/apple.txt",
-                                 "banana/apple.txt"});
+  unorderd_compare_results(
+      vec, {"apple", "banana", "apple/apple.txt", "banana/apple.txt"});
 }
 
 TEST(glob, glob) {
@@ -186,11 +186,10 @@ TEST(glob, recursive) {
 }
 
 TEST(glob, escape) {
-  EXPECT_EQ(cppglob::escape("*"), fs::path("[*]"));
-  EXPECT_EQ(cppglob::escape("*.*"), fs::path("[*].[*]"));
-  EXPECT_EQ(cppglob::escape("file[1-9].txt"), fs::path("file[[]1-9].txt"));
-  EXPECT_EQ(cppglob::escape("file[!1-9].txt"), fs::path("file[[]!1-9].txt"));
-  EXPECT_EQ(cppglob::escape("file[^1-9\\].txt"),
-            fs::path("file[[]^1-9\\].txt"));
-  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a"), fs::path("[[]]-+{}()[?]$.a"));
+  EXPECT_EQ(cppglob::escape("*").native(), "[*]");
+  EXPECT_EQ(cppglob::escape("*.*").native(), "[*].[*]");
+  EXPECT_EQ(cppglob::escape("file[1-9].txt").native(), "file[[]1-9].txt");
+  EXPECT_EQ(cppglob::escape("file[!1-9].txt"), "file[[]!1-9].txt");
+  EXPECT_EQ(cppglob::escape("file[^1-9\\].txt").native(), "file[[]^1-9\\].txt");
+  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), "[[]]-+{}()[?]$.a");
 }
