@@ -288,6 +288,6 @@ namespace cppglob {
                                      pathname.native().size() - drive.size()};
 #endif
     detail::escape_magic(main_path, output);
-    return output;
+    return fs::path(std::move(output));
   }
 }  // namespace cppglob
