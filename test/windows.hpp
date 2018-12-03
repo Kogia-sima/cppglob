@@ -193,5 +193,5 @@ TEST(glob, escape) {
   EXPECT_EQ(cppglob::escape(L"file[!1-9].txt").native(), L"file[[]!1-9].txt");
   EXPECT_EQ(cppglob::escape(L"file[^1-9\\].txt").native(),
             L"file[[]^1-9\\].txt");
-  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), L"[[]]-+{}()[?]$.a");
+  EXPECT_EQ(cppglob::escape(L"[]-+{}()?$.a").native(), L"[[]]-+{}()[?]$.a");
 }

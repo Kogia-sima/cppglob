@@ -189,7 +189,7 @@ TEST(glob, escape) {
   EXPECT_EQ(cppglob::escape("*").native(), "[*]");
   EXPECT_EQ(cppglob::escape("*.*").native(), "[*].[*]");
   EXPECT_EQ(cppglob::escape("file[1-9].txt").native(), "file[[]1-9].txt");
-  EXPECT_EQ(cppglob::escape("file[!1-9].txt"), "file[[]!1-9].txt");
+  EXPECT_EQ(cppglob::escape("file[!1-9].txt").native(), "file[[]!1-9].txt");
   EXPECT_EQ(cppglob::escape("file[^1-9\\].txt").native(), "file[[]^1-9\\].txt");
   EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), "[[]]-+{}()[?]$.a");
 }

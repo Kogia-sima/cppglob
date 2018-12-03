@@ -283,8 +283,8 @@ namespace cppglob {
     string_type output;
 #else
     const string_view_type drive = detail::drive_name(pathname);
-    string_type output(&drive[0], drive.size());
-    const string_view_type main_path{&drive[drive.size()],
+    string_type output(drive);
+    const string_view_type main_path{&pathname.native()[drive.size()],
                                      pathname.native().size() - drive.size()};
 #endif
     detail::escape_magic(main_path, output);
