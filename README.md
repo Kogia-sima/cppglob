@@ -15,6 +15,7 @@ Currently `cppglob` supports the following functions.
 
 -   `glob(pattern, recursive = false)`
 -   `iglob(pattern, recursive = false)`
+-   `escape(pathname)`
 
 ## Prerequisites
 
@@ -74,5 +75,4 @@ int main() {
 -   Nuget package
 -   C++14 support (with `<experimental/filesystem>` or `<boost/filesystem>`)
 -   support CPPGLOB\_HEADER\_ONLY macro
--   `cppglob::escape` function support
 -   Performance improvement
