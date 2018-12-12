@@ -28,6 +28,8 @@ Currently `cppglob` supports the following functions.
 
 ## Install
 
+### Using CMake
+
 ```console
 $ mkdir -p build
 $ cd build
@@ -35,6 +37,17 @@ $ cmake -DBUILD_SHARED_LIBS=ON ..
 $ make
 $ sudo make install
 ```
+
+### Integrate with VC++ project
+
+Currently you must place all header files and sources into the proper directories.
+
+- headers: `include/*/*.hpp`
+- sources: `src/*.cpp`
+
+I'm developing the [Nuget](https://docs.microsoft.com/en-us/nuget/) package.
+
+If the package released, you can easily integrate this project using GUI plugin.
 
 ## Example
 
