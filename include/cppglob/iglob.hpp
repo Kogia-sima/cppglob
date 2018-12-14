@@ -34,6 +34,7 @@
 #include <filesystem>
 #include "config.hpp"
 #include "glob_iterator.hpp"
+#include "escape.hpp"
 
 namespace cppglob {
   /**
