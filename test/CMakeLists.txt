@@ -22,19 +22,23 @@ set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(cppglob_test ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
+function(cppglob_test name source)
+  add_executable(${name} ${source})
 
-if(BUILD_SHARED)
-  target_link_libraries(cppglob_test PRIVATE cppglob ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-else()
-  target_link_libraries(cppglob_test PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-endif()
+  if(BUILD_SHARED)
+    target_link_libraries(${name} PRIVATE cppglob ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+  else()
+    target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+  endif()
 
-add_test(
-  NAME test_cmd
-  COMMAND $<TARGET_FILE:cppglob_test>
-)
+  add_test(
+    NAME "${name}_test"
+    COMMAND $<TARGET_FILE:${name}>
+  )
+endfunction()
 
+cppglob_test(posix ${CMAKE_CURRENT_SOURCE_DIR}/posix.cpp)
+cppglob_test(windows ${CMAKE_CURRENT_SOURCE_DIR}/windows.cpp)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
   if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

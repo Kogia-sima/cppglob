@@ -1,7 +1,16 @@
+#ifdef CPPGLOB_BUILDING
+#  undef CPPGLOB_BUILDING
+#endif
+
+#include <gtest/gtest.h>
+#include <cppglob/config.hpp>
+
+#ifdef CPPGLOB_IS_WINDOWS
+
 #include <cstdio>
+#include <algorithm>
 #include <string_view>
 #include <stdexcept>
-#include <gtest/gtest.h>
 
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>
@@ -194,4 +203,11 @@ TEST(glob, escape) {
   EXPECT_EQ(cppglob::escape(L"file[^1-9\\].txt").native(),
             L"file[[]^1-9\\].txt");
   EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), L"[[]]-+{}()[?]$.a");
+}
+
+#endif
+
+int main(int argc, char* argv[]) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
