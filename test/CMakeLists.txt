@@ -1,19 +1,16 @@
 cmake_minimum_required(VERSION 3.1.0)
 
 find_package(StdFileSystem)
-find_package(Threads REQUIRED)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
-
-include_directories(${GTEST_INCLUDE_DIRS})
 
 function(cppglob_test name source)
   add_executable(${name} ${source} ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
 
   if(BUILD_SHARED)
-    target_link_libraries(${name} PRIVATE cppglob ${STDFILESYSTEM_LIBRARY} Threads::Threads)
+    target_link_libraries(${name} PRIVATE cppglob ${STDFILESYSTEM_LIBRARY})
   else()
-    target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY} Threads::Threads)
+    target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY})
   endif()
 
   add_test(
