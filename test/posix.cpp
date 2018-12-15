@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <string_view>
 #include <stdexcept>
+#include <filesystem>
 
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>

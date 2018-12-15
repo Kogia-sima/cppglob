@@ -13,6 +13,10 @@ function(cppglob_test name source)
     target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY})
   endif()
 
+  if(WITH_COTIRE)
+    cotire(${name})
+  endif()
+
   add_test(
     NAME "${name}_test"
     COMMAND $<TARGET_FILE:${name}>

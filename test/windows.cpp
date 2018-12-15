@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <string_view>
 #include <stdexcept>
+#include <filesystem>
 
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>
@@ -161,7 +162,7 @@ TEST_CASE("glob() function") {
   unorderd_compare_results(vec, {L".\\a\\..\\a\\b\\..\\b\\"});
 
   vec = cppglob::glob(L"a\\?.*");
-  corrects = {L"a\\g.txt", L"a\\h.txt"};
+  std::vector<fs::path> corrects = {L"a\\g.txt", L"a\\h.txt"};
   unorderd_compare_results(vec, corrects);
 
   vec = cppglob::glob(L"*\\g.txt");
