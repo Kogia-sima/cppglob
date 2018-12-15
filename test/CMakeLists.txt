@@ -2,39 +2,25 @@ cmake_minimum_required(VERSION 3.1.0)
 
 find_package(StdFileSystem)
 
-# google test
-find_package(GTest)
-
-if (NOT GTEST_FOUND)
-  if (NOT EXISTS ${PROJECT_SOURCE_DIR}/3rdparty/googletest/googletest)
-    message(FATAL_ERROR "googletest submodule not found. Please run `git submodule update --init --recursive` to fetch the googletest source code")
-  endif()
-  add_subdirectory(
-    ${PROJECT_SOURCE_DIR}/3rdparty/googletest
-    ${CMAKE_BINARY_DIR}/googletest)
-  set(GTEST_INCLUDE_DIRS ${gtest_SOURCE_DIR}/include)
-  set(GTEST_BOTH_LIBRARIES gtest gtest_main)
-endif()
-
-find_package(Threads REQUIRED)
-
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
 
-include_directories(${GTEST_INCLUDE_DIRS})
+function(cppglob_test name source)
+  add_executable(${name} ${source} ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
 
-add_executable(cppglob_test ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp)
+  if(BUILD_SHARED)
+    target_link_libraries(${name} PRIVATE cppglob ${STDFILESYSTEM_LIBRARY})
+  else()
+    target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY})
+  endif()
 
-if(BUILD_SHARED)
-  target_link_libraries(cppglob_test PRIVATE cppglob ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-else()
-  target_link_libraries(cppglob_test PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY} ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-endif()
+  add_test(
+    NAME "${name}_test"
+    COMMAND $<TARGET_FILE:${name}>
+  )
+endfunction()
 
-add_test(
-  NAME test_cmd
-  COMMAND $<TARGET_FILE:cppglob_test>
-)
-
+cppglob_test(posix ${CMAKE_CURRENT_SOURCE_DIR}/posix.cpp)
+cppglob_test(windows ${CMAKE_CURRENT_SOURCE_DIR}/windows.cpp)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
   if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

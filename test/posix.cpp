@@ -1,12 +1,20 @@
+#ifdef CPPGLOB_BUILDING
+#  undef CPPGLOB_BUILDING
+#endif
+
+#include <cppglob/config.hpp>
+
+#ifndef CPPGLOB_IS_WINDOWS
+
 #include <cstdio>
 #include <algorithm>
 #include <string_view>
 #include <stdexcept>
-#include <gtest/gtest.h>
 
 #include <cppglob/fnmatch.hpp>
 #include <cppglob/glob.hpp>
 #include <cppglob/iglob.hpp>
+#include "doctest.h"
 
 namespace fs = std::filesystem;
 
@@ -34,35 +42,34 @@ void create_file(const char* str) {
 
 void unorderd_compare_results(const std::vector<fs::path>& actual,
                               const std::vector<fs::path>& corrects) {
-  ASSERT_EQ(actual.size(), corrects.size());
+  REQUIRE_EQ(actual.size(), corrects.size());
 
   for (auto&& elem : actual) {
     bool matched = false;
 
     for (auto&& elem2 : corrects) {
-      if (elem.native() == elem2.native()) {
+      if (elem == elem2) {
         matched = true;
         break;
       }
     }
-    EXPECT_TRUE(matched);
+    CHECK_MESSAGE(matched, elem << " doesn't exist in expected name list.");
   }
 }
 
-TEST(glob_iterator, generic) {
+TEST_CASE("glob_iterator manipulation") {
   std::vector<fs::path> dirs = {"a/", "a/b/", "a/b/c/"};
   cppglob::glob_iterator it(dirs), end;
-  EXPECT_EQ(std::distance(it, end), 3);
-  EXPECT_EQ((*it).native(), "a/");
+  CHECK_EQ(std::distance(it, end), 3);
+  CHECK_EQ((*it), fs::path("a/"));
   it++;
-  EXPECT_EQ(it->native(), "a/b/");
+  CHECK_EQ(*it, fs::path("a/b/"));
 
   const auto it2 = std::move(it);
-  EXPECT_EQ(std::distance(it2, end), 2);
-  EXPECT_EQ((*it2).native(), "a/b/");
-  EXPECT_EQ(it2->native(), "a/b/");
+  CHECK_EQ(std::distance(it2, end), 2);
+  CHECK_EQ(*it2, fs::path("a/b/"));
 
-  EXPECT_NE(it2, end);
+  CHECK_NE(it2, end);
 
   cppglob::glob_iterator it3 = it2;
   it3.swap(it);
@@ -70,44 +77,44 @@ TEST(glob_iterator, generic) {
   ++it;
   it++;
 
-  EXPECT_TRUE(it == end);
+  CHECK_EQ(it, end);
 
   cppglob::glob_iterator it4(std::move(dirs));
   it3 = std::move(it4);
-  EXPECT_EQ(std::distance(it3, end), 3);
+  CHECK_EQ(std::distance(it3, end), 3);
 }
 
-TEST(fnmatch, translate) {
-  EXPECT_EQ(cppglob::translate("*"), ".*");
-  EXPECT_EQ(cppglob::translate("*.*"), ".*\\..*");
-  EXPECT_EQ(cppglob::translate("file[1-9].txt"), "file[1-9]\\.txt");
-  EXPECT_EQ(cppglob::translate("file[!1-9].txt"), "file[^1-9]\\.txt");
-  EXPECT_EQ(cppglob::translate("file[^1-9\\].txt"), "file[\\1-9\\\\]\\.txt");
-  EXPECT_EQ(cppglob::translate("[]-+{}()?$.a"), R"(\[\]\-\+\{\}\(\).\$\.a)");
+TEST_CASE("translate() function") {
+  CHECK_EQ(cppglob::translate("*"), ".*");
+  CHECK_EQ(cppglob::translate("*.*"), ".*\\..*");
+  CHECK_EQ(cppglob::translate("file[1-9].txt"), "file[1-9]\\.txt");
+  CHECK_EQ(cppglob::translate("file[!1-9].txt"), "file[^1-9]\\.txt");
+  CHECK_EQ(cppglob::translate("file[^1-9\\].txt"), "file[\\1-9\\\\]\\.txt");
+  CHECK_EQ(cppglob::translate("[]-+{}()?$.a"), R"(\[\]\-\+\{\}\(\).\$\.a)");
 }
 
-TEST(fnmatch, filter) {
+TEST_CASE("filter() function") {
   std::vector<fs::path> names{".///./a/b", "./a/../a/b", "apple/"};
   std::string_view pattern{"./a/*"};
   cppglob::filter(names, pattern);
 
-  ASSERT_EQ(names.size(), 2L);
+  REQUIRE_EQ(names.size(), 2L);
 
-  EXPECT_EQ(names[0].native(), ".///./a/b");
-  EXPECT_EQ(names[1].native(), "./a/../a/b");
+  CHECK_EQ(names[0], fs::path(".///./a/b"));
+  CHECK_EQ(names[1], fs::path("./a/../a/b"));
 }
 
-TEST(glob, iglob) {
+TEST_CASE("iglob() function") {
   test_in_dir _;
 
-  ASSERT_TRUE(fs::create_directories("apple"));
-  ASSERT_TRUE(fs::create_directories("banana"));
+  REQUIRE(fs::create_directories("apple"));
+  REQUIRE(fs::create_directories("banana"));
   create_file("apple/apple.txt");
   create_file("banana/apple.txt");
 
   cppglob::glob_iterator it = cppglob::iglob("./*"), end;
-  ASSERT_NE(it, end);
-  ASSERT_EQ(end, cppglob::iglob());
+  REQUIRE_NE(it, end);
+  REQUIRE_EQ(end, cppglob::iglob());
 
   std::vector<fs::path> vec(it, end);
   unorderd_compare_results(vec, {"./apple", "./banana"});
@@ -119,11 +126,11 @@ TEST(glob, iglob) {
       vec, {"apple", "banana", "apple/apple.txt", "banana/apple.txt"});
 }
 
-TEST(glob, glob) {
+TEST_CASE("glob() function") {
   test_in_dir _;
 
-  ASSERT_TRUE(fs::create_directories("a/b/c/.d"));
-  ASSERT_TRUE(fs::create_directories("e"));
+  REQUIRE(fs::create_directories("a/b/c/.d"));
+  REQUIRE(fs::create_directories("e"));
 
   // create file
   create_file("f.txt");
@@ -163,10 +170,10 @@ TEST(glob, glob) {
   unorderd_compare_results(vec, {});
 }
 
-TEST(glob, recursive) {
+TEST_CASE("recursive glob") {
   test_in_dir _;
 
-  ASSERT_TRUE(fs::create_directories("a/b/c"));
+  REQUIRE(fs::create_directories("a/b/c"));
 
   // create file
   create_file("d.txt");
@@ -185,11 +192,13 @@ TEST(glob, recursive) {
   unorderd_compare_results(vec, corrects);
 }
 
-TEST(glob, escape) {
-  EXPECT_EQ(cppglob::escape("*").native(), "[*]");
-  EXPECT_EQ(cppglob::escape("*.*").native(), "[*].[*]");
-  EXPECT_EQ(cppglob::escape("file[1-9].txt").native(), "file[[]1-9].txt");
-  EXPECT_EQ(cppglob::escape("file[!1-9].txt").native(), "file[[]!1-9].txt");
-  EXPECT_EQ(cppglob::escape("file[^1-9\\].txt").native(), "file[[]^1-9\\].txt");
-  EXPECT_EQ(cppglob::escape("[]-+{}()?$.a").native(), "[[]]-+{}()[?]$.a");
+TEST_CASE("escape() function") {
+  CHECK_EQ(cppglob::escape("*"), fs::path("[*]"));
+  CHECK_EQ(cppglob::escape("*.*"), fs::path("[*].[*]"));
+  CHECK_EQ(cppglob::escape("file[1-9].txt"), fs::path("file[[]1-9].txt"));
+  CHECK_EQ(cppglob::escape("file[!1-9].txt"), fs::path("file[[]!1-9].txt"));
+  CHECK_EQ(cppglob::escape("file[^1-9\\].txt"), fs::path("file[[]^1-9\\].txt"));
+  CHECK_EQ(cppglob::escape("[]-+{}()?$.a"), fs::path("[[]]-+{}()[?]$.a"));
 }
+
+#endif
