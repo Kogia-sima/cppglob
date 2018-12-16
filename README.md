@@ -7,7 +7,8 @@
 [![Report](https://inspecode.rocro.com/badges/github.com/machida-mn/cppglob/report?token=y0OJyNYwrlrq2ON7VwNjczZEOqvWZykWH9g71RJlpwQ&branch=master)](https://inspecode.rocro.com/reports/github.com/machida-mn/cppglob/branch/master/summary)
 [![codecov](https://codecov.io/gh/machida-mn/cppglob/branch/master/graph/badge.svg)](https://codecov.io/gh/machida-mn/cppglob)
 [![GitHub license](https://img.shields.io/github/license/machida-mn/cppglob.svg)](https://github.com/machida-mn/cppglob/blob/master/LICENSE.txt)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Kogia-sima/cppglob.svg?style=flat)](https://github.com/Kogia-sima/cppglob/commits/master)
 
 `cppglob` is a C++ port of Python `glob` module.
 
