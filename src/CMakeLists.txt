@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.1.0)
 
 find_package(StdFileSystem)
 
+function(add_compiler_warnings target)
+  if (MSVC)
+    target_compile_options(${target} PRIVATE /Wall)
+  elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${target} PRIVATE -Wall -pedantic)
+  endif()
+endfunction()
+
 if (BUILD_SHARED)
   add_library(cppglob SHARED ${cpp_sources})
   target_link_libraries(cppglob ${STDFILESYSTEM_LIBRARY})
@@ -9,6 +19,8 @@ if (BUILD_SHARED)
     PROPERTIES VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
+
+  add_compiler_warnings(cppglob)
 
   if (WITH_COTIRE)
     cotire(cppglob)
@@ -29,6 +41,8 @@ if (BUILD_STATIC)
     PROPERTIES VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
+
+  add_compiler_warnings(cppglob_static)
 
   if (WITH_COTIRE)
     cotire(cppglob_static)
