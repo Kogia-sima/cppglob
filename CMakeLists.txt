@@ -9,6 +9,7 @@ option(WITH_COTIRE "Use cotire to create precompiled header before build" OFF)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+include(use_gold_linker)
 if (WITH_COTIRE)
   include(cotire)
 endif()
