@@ -4,13 +4,15 @@ find_package(StdFileSystem)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
 
+add_library(doctest SHARED ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
+
 function(cppglob_test name source)
-  add_executable(${name} ${source} ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
+  add_executable(${name} ${source})
 
   if(BUILD_SHARED)
-    target_link_libraries(${name} PRIVATE cppglob ${STDFILESYSTEM_LIBRARY})
+    target_link_libraries(${name} PRIVATE doctest cppglob ${STDFILESYSTEM_LIBRARY})
   else()
-    target_link_libraries(${name} PRIVATE cppglob_static ${STDFILESYSTEM_LIBRARY})
+    target_link_libraries(${name} PRIVATE doctest cppglob_static ${STDFILESYSTEM_LIBRARY})
   endif()
 
   if(WITH_COTIRE)
