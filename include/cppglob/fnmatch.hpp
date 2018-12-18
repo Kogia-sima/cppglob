@@ -71,14 +71,6 @@ namespace cppglob {
    */
   CPPGLOB_EXPORT void filter(std::vector<fs::path>& names,
                              const string_view_type& pat);
-
-  /**
-   * @brief translate shell PATTERN to regular expression
-   * @param pat patten string
-   *
-   * There is no way to quote meta-characters
-   */
-  CPPGLOB_EXPORT string_type translate(const string_view_type& pat);
 }  // namespace cppglob
 
 #endif

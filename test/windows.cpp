@@ -85,15 +85,6 @@ TEST_CASE("glob_iterator manipulation") {
   CHECK_EQ(std::distance(it3, end), 3);
 }
 
-TEST_CASE("translate() function") {
-  CHECK_EQ(cppglob::translate(L"*"), L".*");
-  CHECK_EQ(cppglob::translate(L"*.*"), L".*\\..*");
-  CHECK_EQ(cppglob::translate(L"file[1-9].txt"), L"file[1-9]\\.txt");
-  CHECK_EQ(cppglob::translate(L"file[!1-9].txt"), L"file[^1-9]\\.txt");
-  CHECK_EQ(cppglob::translate(L"file[^1-9\\].txt"), L"file[\\1-9\\\\]\\.txt");
-  CHECK_EQ(cppglob::translate(L"[]-+{}()?$.a"), LR"(\[\]\-\+\{\}\(\).\$\.a)");
-}
-
 TEST_CASE("filter() function") {
   std::vector<fs::path> names{L".\\\\\\.\\a\\b", L".\\a\\..\\a\\b", L"apple\\"};
   std::wstring_view pattern{L".\\a\\*"};

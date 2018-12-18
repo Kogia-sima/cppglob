@@ -24,13 +24,11 @@
 #include <cctype>
 #include <string>
 #include <string_view>
-#include <regex>
 #include <filesystem>
+#include <algorithm>
 #include <cppglob/fnmatch.hpp>
 
 namespace cppglob {
-  using regex_type = std::basic_regex<char_type>;
-
   namespace detail {
     CPPGLOB_INLINE bool charequal(const char_type c1, const char_type c2,
                                  bool caseSensitive = true) {
@@ -66,7 +64,7 @@ namespace cppglob {
             if (is_not == charincluded(*it1, charlist, caseSensitive)) {
               it2 = pos;
             } else {
-              return 0;
+              return false;
             }
           }
         } else if (!charequal(*it2, *it1, caseSensitive) && (*it2 != '?')) {
@@ -79,7 +77,7 @@ namespace cppglob {
       while (it1 != str.end()) {
         if (*it2 == '*') {
           if (++it2 == wild.end()) {
-            return 1;
+            return true;
           }
           mp = it2;
           cp = it1 + 1;
@@ -90,7 +88,7 @@ namespace cppglob {
             const string_view_type charlist =
                 wild.substr(it2 - wild.begin() + (is_not ? 1 : 0));
             if (is_not == charincluded(*it1, charlist, caseSensitive)) {
-              return 0;
+              return false;
             } else {
               it2 = pos;
             }
@@ -109,46 +107,6 @@ namespace cppglob {
       }
       return (*it2 == CStr('\0'));
     }
-
-    CPPGLOB_INLINE regex_type compile_pattern(const string_view_type& pat) {
-      return regex_type(translate(pat));
-    }
-
-    CPPGLOB_INLINE string_type replace_all(const string_view_type& str,
-                                           const string_view_type& from,
-                                           const string_view_type& to) {
-      string_type res;
-      res.reserve(str.size());
-
-      string_type::size_type pos_start = 0L;
-
-      while (true) {
-        string_type::size_type pos = str.find(from, pos_start);
-
-        if (pos == string_view_type::npos) {
-          res += str.substr(pos_start);
-          break;
-        }
-
-        res += str.substr(pos_start, pos - pos_start);
-        res += to;
-
-        pos_start = pos + from.size();
-      }
-
-      return res;
-    }
-
-    CPPGLOB_INLINE bool should_be_escaped(char_type c) {
-      static const string_view_type special_chars = CStr(R"([]-{}()*+?.\^$|)");
-      for (const char_type& special_char : special_chars) {
-        if (c == special_char) {
-          return true;
-        }
-      }
-      return false;
-    }
-
     CPPGLOB_INLINE string_type normpath(const string_view_type& p) {
       return fs::path(p).lexically_normal().native();
     }
@@ -171,57 +129,5 @@ namespace cppglob {
 
     auto result = std::remove_if(names.begin(), names.end(), filter_fn);
     names.erase(result, names.end());
-  }
-
-  string_type translate(const string_view_type& pat) {
-    std::size_t i = 0L, n = pat.size();
-    string_type res;
-    res.reserve(pat.size() + 5);
-
-    while (i < n) {
-      auto c = pat[i];
-      ++i;
-
-      if (c == '*') {
-        res += CStr(".*");
-      } else if (c == '?') {
-        res += '.';
-      } else if (c == '[') {
-        std::size_t j = i;
-        if (j < n && pat[j] == '!') {
-          ++j;
-        }
-        if (j < n && pat[j] == ']') {
-          ++j;
-        }
-        while (j < n && pat[j] != ']') {
-          ++j;
-        }
-
-        if (j >= n) {
-          // close parenthesis not found.
-          res += CStr("\\[");
-        } else {
-          string_type stuff = detail::replace_all(
-              string_view_type(&pat[i], j - i), CStr("\\"), CStr("\\\\"));
-          i = j + 1;
-          if (stuff[0] == '!') {
-            stuff[0] = '^';
-          } else if (stuff[0] == '^') {
-            stuff[0] = '\\';
-          }
-          res += '[';
-          res += stuff;
-          res += ']';
-        }
-      } else {
-        if (detail::should_be_escaped(c)) {
-          res += '\\';
-        }
-        res += c;
-      }
-    }
-
-    return res;
   }
 }  // namespace cppglob
