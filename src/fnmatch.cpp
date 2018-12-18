@@ -53,26 +53,7 @@ namespace cppglob {
                                 bool caseSensitive) {
       string_view_type::const_iterator it1 = str.begin(), it2 = wild.begin();
       string_view_type::const_iterator cp, mp;
-
-      while (it1 != str.end() && (it2 == wild.end() || *it2 != '*')) {
-        if (*it2 == '[') {
-          const auto pos = std::find(it2 + 1, wild.end(), ']');
-          if (pos != wild.end()) {
-            const bool is_not = *(++it2) == '!';
-            const string_view_type charlist =
-                wild.substr(it2 - wild.begin() + (is_not ? 1 : 0));
-            if (is_not == charincluded(*it1, charlist, caseSensitive)) {
-              it2 = pos;
-            } else {
-              return false;
-            }
-          }
-        } else if (!charequal(*it2, *it1, caseSensitive) && (*it2 != '?')) {
-          return false;
-        }
-        ++it2;
-        ++it1;
-      }
+      bool asterisk_exists = false;
 
       while (it1 != str.end() && it2 != wild.end()) {
         if (*it2 == '*') {
@@ -81,6 +62,7 @@ namespace cppglob {
           }
           mp = it2;
           cp = it1;
+          asterisk_exists = true;
         } else if (*it2 == '[') {
           const auto pos = std::find(it2 + 1, wild.end(), ']');
           if (pos != wild.end()) {
@@ -89,14 +71,18 @@ namespace cppglob {
                 wild.substr(it2 - wild.begin() + (is_not ? 1 : 0));
             if (is_not == charincluded(*it1, charlist, caseSensitive)) {
               return false;
-            } else {
-              it2 = pos;
             }
+
+            it2 = pos;
           }
-        } else if (charequal(*it2, *it1, caseSensitive)) {
+        } else if (charequal(*it2, *it1, caseSensitive) || (*it2 == '?')) {
           ++it2;
           ++it1;
         } else {
+          if (!asterisk_exists) {
+            return false;
+          }
+
           it2 = mp;   //! OCLINT parameter reassignment
           it1 = ++cp;  //! OCLINT parameter reassignment
         }
