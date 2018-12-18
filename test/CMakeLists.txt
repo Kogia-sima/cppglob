@@ -4,7 +4,7 @@ find_package(StdFileSystem)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/src/CMakeFiles/cppglob.dir)
 
-add_library(doctest SHARED ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
+add_library(doctest STATIC ${CMAKE_CURRENT_SOURCE_DIR}/doctest.cpp)
 
 function(cppglob_test name source)
   add_executable(${name} ${source})
@@ -21,7 +21,7 @@ function(cppglob_test name source)
 
   add_test(
     NAME "${name}_test"
-    COMMAND $<TARGET_FILE:${name}>
+    COMMAND $<TARGET_FILE:${name}> -s
   )
 endfunction()
 

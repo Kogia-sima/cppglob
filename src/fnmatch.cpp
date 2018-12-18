@@ -51,10 +51,10 @@ namespace cppglob {
     CPPGLOB_INLINE bool wildcmp(const string_view_type& str,
                                 const string_view_type& wild,
                                 bool caseSensitive) {
-      string_view_type::iterator it1 = str.begin(), it2 = wild.begin();
-      string_view_type::iterator cp, mp;
+      string_view_type::const_iterator it1 = str.begin(), it2 = wild.begin();
+      string_view_type::const_iterator cp, mp;
 
-      while ((it1 != str.end()) && (*it2 != '*')) {
+      while (it1 != str.end() && (it2 == wild.end() || *it2 != '*')) {
         if (*it2 == '[') {
           const auto pos = std::find(it2 + 1, wild.end(), ']');
           if (pos != wild.end()) {
@@ -74,13 +74,13 @@ namespace cppglob {
         ++it1;
       }
 
-      while (it1 != str.end()) {
+      while (it1 != str.end() && it2 != wild.end()) {
         if (*it2 == '*') {
           if (++it2 == wild.end()) {
             return true;
           }
           mp = it2;
-          cp = it1 + 1;
+          cp = it1;
         } else if (*it2 == '[') {
           const auto pos = std::find(it2 + 1, wild.end(), ']');
           if (pos != wild.end()) {
@@ -98,14 +98,14 @@ namespace cppglob {
           ++it1;
         } else {
           it2 = mp;   //! OCLINT parameter reassignment
-          it1 = cp++;  //! OCLINT parameter reassignment
+          it1 = ++cp;  //! OCLINT parameter reassignment
         }
       }
 
-      while (*it2 == '*') {
-        it2++;
+      while (it2 != wild.end() && *it2 == '*') {
+        ++it2;
       }
-      return (*it2 == CStr('\0'));
+      return (it2 == wild.end());
     }
     CPPGLOB_INLINE string_type normpath(const string_view_type& p) {
       return fs::path(p).lexically_normal().native();
@@ -113,10 +113,11 @@ namespace cppglob {
   }  // namespace detail
 
   bool fnmatch(const fs::path& name, const string_view_type& pat) {
+    string_view_type name_view(&(name.native()[0]), name.native().size());
 #ifndef CPPGLOB_IS_WINDOWS
-    return detail::wildcmp(name.native().c_str(), pat.data(), true);
+    return detail::wildcmp(name_view, pat, true);
 #else
-    return detail::wildcmp(name.native().c_str(), pat.data(), false);
+    return detail::wildcmp(name_view, pat, false);
 #endif
   }
 
