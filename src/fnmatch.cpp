@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <cctype>
 #include <string>
 #include <string_view>
 #include <regex>
@@ -31,6 +32,84 @@ namespace cppglob {
   using regex_type = std::basic_regex<char_type>;
 
   namespace detail {
+    CPPGLOB_INLINE bool charequal(const char_type c1, const char_type c2,
+                                 bool caseSensitive = true) {
+      return caseSensitive ? (c1 == c2) :
+                             (tolower(c2) == tolower(c1));
+    }
+
+    CPPGLOB_INLINE bool charincluded(const char_type ch,
+                                     const string_view_type charlist,
+                                     bool caseSensitive = true) {
+      for (const char_type& ch2 : charlist) {
+        if (charequal(ch, ch2, caseSensitive)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    CPPGLOB_INLINE bool wildcmp(const string_view_type& str,
+                                const string_view_type& wild,
+                                bool caseSensitive) {
+      string_view_type::iterator it1 = str.begin(), it2 = wild.begin();
+      string_view_type::iterator cp, mp;
+
+      while ((it1 != str.end()) && (*it2 != '*')) {
+        if (*it2 == '[') {
+          const auto pos = std::find(it2 + 1, wild.end(), ']');
+          if (pos != wild.end()) {
+            const bool is_not = *(++it2) == '!';
+            const string_view_type charlist =
+                wild.substr(it2 - wild.begin() + (is_not ? 1 : 0));
+            if (is_not == charincluded(*it1, charlist, caseSensitive)) {
+              it2 = pos;
+            } else {
+              return 0;
+            }
+          }
+        } else if (!charequal(*it2, *it1, caseSensitive) && (*it2 != '?')) {
+          return false;
+        }
+        ++it2;
+        ++it1;
+      }
+
+      while (it1 != str.end()) {
+        if (*it2 == '*') {
+          if (++it2 == wild.end()) {
+            return 1;
+          }
+          mp = it2;
+          cp = it1 + 1;
+        } else if (*it2 == '[') {
+          const auto pos = std::find(it2 + 1, wild.end(), ']');
+          if (pos != wild.end()) {
+            const bool is_not = *(++it2) == '!';
+            const string_view_type charlist =
+                wild.substr(it2 - wild.begin() + (is_not ? 1 : 0));
+            if (is_not == charincluded(*it1, charlist, caseSensitive)) {
+              return 0;
+            } else {
+              it2 = pos;
+            }
+          }
+        } else if (charequal(*it2, *it1, caseSensitive)) {
+          ++it2;
+          ++it1;
+        } else {
+          it2 = mp;   //! OCLINT parameter reassignment
+          it1 = cp++;  //! OCLINT parameter reassignment
+        }
+      }
+
+      while (*it2 == '*') {
+        it2++;
+      }
+      return (*it2 == CStr('\0'));
+    }
+
     CPPGLOB_INLINE regex_type compile_pattern(const string_view_type& pat) {
       return regex_type(translate(pat));
     }
@@ -75,12 +154,19 @@ namespace cppglob {
     }
   }  // namespace detail
 
+  bool fnmatch(const fs::path& name, const string_view_type& pat) {
+#ifndef CPPGLOB_IS_WINDOWS
+    return detail::wildcmp(name.native().c_str(), pat.data(), true);
+#else
+    return detail::wildcmp(name.native().c_str(), pat.data(), false);
+#endif
+  }
+
   void filter(std::vector<fs::path>& names, const string_view_type& pat) {
-    string_type pat_str = detail::normpath(pat);
-    regex_type re =
-        detail::compile_pattern(string_view_type(&pat_str[0], pat_str.size()));
+    const string_type pat_str = detail::normpath(pat);
+    const string_view_type pat_view(&pat_str[0], pat_str.size());
     auto filter_fn = [&](std::vector<fs::path>::value_type& p) -> bool {
-      return !std::regex_match(p.lexically_normal().native(), re);
+      return !fnmatch(p.lexically_normal().native(), pat_str);
     };
 
     auto result = std::remove_if(names.begin(), names.end(), filter_fn);
