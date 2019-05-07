@@ -94,6 +94,8 @@ namespace cppglob {
     CPPGLOB_INLINE std::vector<fs::path> glob0(const fs::path& dirname,
                                                const fs::path& basename,
                                                bool dironly) {
+      (void)dironly;
+
       if (basename.empty()) {
         if (fs::is_directory(dirname)) {
           return std::vector<fs::path>({basename});
@@ -110,7 +112,7 @@ namespace cppglob {
                                                bool dironly) {
       std::vector<fs::path> names = iterdir(dirname, dironly);
 
-      if (ishidden(pattern)) {
+      if (!ishidden(pattern)) {
         auto result =
             std::remove_if(names.begin(), names.end(),
                            [](fs::path& p) -> bool { return ishidden(p); });
