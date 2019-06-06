@@ -1,12 +1,12 @@
 # C++ GLOB library
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-C++-1f425f.svg)](http://www.cplusplus.com/)
-[![Build Status](https://travis-ci.org/machida-mn/cppglob.svg?branch=master)](https://travis-ci.org/machida-mn/cppglob)
-[![Build status](https://ci.appveyor.com/api/projects/status/01dto0a1vi94ayeu/branch/master?svg=true)](https://ci.appveyor.com/project/machida-mn/cppglob/branch/master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ea442a1cd624c62af285e7de532319a)](https://www.codacy.com/app/machida-mn/cppglob?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=machida-mn/cppglob&amp;utm_campaign=Badge_Grade)
-[![Report](https://inspecode.rocro.com/badges/github.com/machida-mn/cppglob/report?token=y0OJyNYwrlrq2ON7VwNjczZEOqvWZykWH9g71RJlpwQ&branch=master)](https://inspecode.rocro.com/reports/github.com/machida-mn/cppglob/branch/master/summary)
-[![codecov](https://codecov.io/gh/machida-mn/cppglob/branch/master/graph/badge.svg)](https://codecov.io/gh/machida-mn/cppglob)
-[![GitHub license](https://img.shields.io/github/license/machida-mn/cppglob.svg)](https://github.com/machida-mn/cppglob/blob/master/LICENSE.txt)
+[![made-with-cpp](https://img.shields.io/badge/Made%20with-C++-1f425f.svg)](http://www.cplusplus.com/)
+[![Build Status](https://travis-ci.org/Kogia-sima/cppglob.svg?branch=master)](https://travis-ci.org/Kogia-sima/cppglob)
+[![Build status](https://ci.appveyor.com/api/projects/status/3g83j7fyxak52dvp?svg=true)](https://ci.appveyor.com/project/Kogiasima/cppglob)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/55beda5e61824389bb78489f44a07a6a)](https://www.codacy.com/app/orcinus4627/cppglob?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kogia-sima/cppglob&amp;utm_campaign=Badge_Grade)
+[![Report](https://inspecode.rocro.com/badges/github.com/Kogia-sima/cppglob/report?token=y0OJyNYwrlrq2ON7VwNjczZEOqvWZykWH9g71RJlpwQ&branch=master)](https://inspecode.rocro.com/reports/github.com/Kogia-sima/cppglob/branch/master/summary)
+[![codecov](https://codecov.io/gh/Kogia-sima/cppglob/branch/master/graph/badge.svg)](https://codecov.io/gh/Kogia-sima/cppglob)
+[![GitHub license](https://img.shields.io/github/license/Kogia-sima/cppglob.svg)](https://github.com/Kogia-sima/cppglob/blob/master/LICENSE.txt)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 [![GitHub last commit](https://img.shields.io/github/last-commit/Kogia-sima/cppglob.svg?style=flat)](https://github.com/Kogia-sima/cppglob/commits/master)
 
