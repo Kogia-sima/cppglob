@@ -39,22 +39,22 @@ matrix:
         - MATRIX_EVAL="CC=clang && CXX=clang++ && BUILD_TYPE=Release"
       cache:
         directories:
-          - /usr/local/Cellar/llvm/7.0.0_1
+          - /usr/local/Cellar/llvm@7/7.0.1
         timeout: 1000
 
 install:
   - |
     if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-      if [ -e /usr/local/Cellar/llvm/7.0.0_1/bin ]; then
+      if [ -e /usr/local/Cellar/llvm@7/7.0.1/bin ]; then
         echo "Clang cache found."
-        ln -s /usr/local/Cellar/llvm/7.0.0_1 /usr/local/opt/llvm
+        ln -sf /usr/local/Cellar/llvm@7/7.0.1 /usr/local/opt/llvm@7
       else
         echo "Installing clang..."
-        rm -rf /usr/local/Cellar/llvm/7.0.0_1
-        brew install --with-clang llvm
-        ls -l /usr/local/Cellar/llvm/7.0.0_1
+        rm -rf /usr/local/Cellar/llvm@7/7.0.1
+        brew install llvm@7
+        ls -l /usr/local/Cellar/llvm@7/7.0.1
       fi
-      CC_PREFIX=/usr/local/opt/llvm
+      CC_PREFIX=/usr/local/opt/llvm@7
       export PATH="${CC_PREFIX}/bin:$PATH"
       export LDFLAGS="-L${CC_PREFIX}/lib -Wl,-rpath,${CC_PREFIX}/lib"
       export CPPFLAGS="-I${CC_PREFIX}/include"
