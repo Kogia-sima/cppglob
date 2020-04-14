@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1.0)
 
+include(GNUInstallDirs)
+
 find_package(StdFileSystem)
+
 
 if (BUILD_SHARED)
   add_library(cppglob SHARED ${cpp_sources})
@@ -17,7 +20,7 @@ if (BUILD_SHARED)
   install(
     TARGETS cppglob
     EXPORT cppglob-config
-    DESTINATION lib
+    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
     COMPONENT libs)
 
 endif()
