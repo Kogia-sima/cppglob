@@ -2,12 +2,12 @@
 
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 includedir=${prefix}/include
 
 Name: cppglob
 Description: C++ port of Python glob module
 URL: https://github.com/machida-mn/cppglob
 Version: @PROJECT_VERSION@
-Libs: -L${exec_prefix}/lib -lcppglob @STDFILESYSTEM_LDFLAGS@
+Libs: -L${libdir} -lcppglob @STDFILESYSTEM_LDFLAGS@
 Cflags: -I${includedir}
