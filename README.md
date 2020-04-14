@@ -18,6 +18,8 @@ Currently `cppglob` supports the following functions.
 -   `iglob(pattern, recursive = false)`
 -   `escape(pathname)`
 
+:warning: This project is no longer maintained. If anyone is interested in continuing the project, let me know so that I can transfer ownership of this repository.
+
 ## Prerequisites
 
 -   OS: Windows, OSX, Linux
