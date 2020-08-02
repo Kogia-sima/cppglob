@@ -28,11 +28,15 @@ with the -std=c++17 or -std=gnu++17 compiler options.
 #  define CPPGLOB_LOCAL
 #  define CPPGLOB_INLINE CPPGLOB_LOCAL
 #elif (defined _WIN32 || defined WINCE || defined __CYGWIN__)
-#  ifdef CPPGLOB_BUILDING
-#    define CPPGLOB_EXPORT __declspec(dllexport)
+#  if defined(CPPGLOB_STATIC)
+#    define CPPGLOB_EXPORT
 #  else
-#    define CPPGLOB_EXPORT __declspec(dllimport)
-#  endif
+#    ifdef CPPGLOB_BUILDING
+#      define CPPGLOB_EXPORT __declspec(dllexport)
+#    else
+#      define CPPGLOB_EXPORT __declspec(dllimport)
+#    endif
+#	endif
 #  define CPPGLOB_LOCAL
 #  define CPPGLOB_INLINE inline
 #elif defined __GNUC__ && __GNUC__ >= 4

@@ -26,6 +26,7 @@ if (BUILD_SHARED)
 endif()
 
 if (BUILD_STATIC)
+  add_definitions("-DCPPGLOB_STATIC")
   add_library(cppglob_static STATIC ${cpp_sources})
   target_link_libraries(cppglob_static ${STDFILESYSTEM_LIBRARY})
   set_target_properties(cppglob_static
